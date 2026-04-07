@@ -1,0 +1,11 @@
+Design Decisions Explained
+
+Decision                                     Reason
+
+NUMERIC(12,2) for price                      Avoids floating-point precision errors in financial data. Floats like 0.1 + 0.2 = 0.30000000000004 in many languages.
+Separate inventory_ledger table              An audit log makes it possible to reconstruct any historical state, detect discrepancies, and calculate sales velocity (crucial for "days until stockout").
+UNIQUE (company_id, sku)                     SKUs are meaningful only within a company's catalog.
+quantity_after in ledger                     Stores a snapshot so you don't have to replay the entire history to find stock at a point in time.
+low_stock_threshold on products table        Different product types have different reorder urgency. A product with 5-day supplier lead time needs a higher threshold than one available next-day.
+ON DELETE CASCADE for warehouse/inventory    If a warehouse is deleted, orphaned inventory records serve no purpose and should go too.
+Flat bundles only                            Recursive bundle resolution at query time is expensive and complex. This is a pragmatic starting point — revisable if the business needs it.
