@@ -1,0 +1,9 @@
+Assumptions Made
+Before writing the code, here are the assumptions and why:
+
+"Recent sales activity" = at least one sale ledger entry in the past 30 days. Reason: 30 days is a standard business month; anything longer risks alerting on seasonal/discontinued items.
+"Days until stockout" is calculated as current_stock / avg_daily_sales where avg daily sales = total units sold in last 30 days ÷ 30. Reason: simple linear extrapolation; good enough for a v1 alert without ML forecasting.
+Low stock condition = current_stock <= low_stock_threshold AND the product had at least one sale in the last 30 days.
+Supplier shown is the one attached to the product directly (one supplier per product as designed).
+Company validation is performed before running the heavy query — fail fast.
+The database library used is pg (node-postgres) with raw SQL. Reason: gives full control over the query and is easier to read/review than an ORM for a complex JOIN like this.
