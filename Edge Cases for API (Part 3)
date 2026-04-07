@@ -1,0 +1,12 @@
+Edge Cases Handled
+
+Edge Case                                 How It's Handled
+
+Company doesn't exist                     Returns 404 before running the heavy query
+Invalid company_id (string, negative)     Returns 400 with clear message
+Product has no linked supplier            Returns supplier: null instead of crashing
+Product has stock but zero recent sales   Excluded from alerts (not "active")
+Current stock is 0 (complete stockout)    Still included — days_until_stockout will be 0
+Product exists in multiple warehouses     Each warehouse gets its own alert row
+Bundle products                           Explicitly excluded — component alerts handle this
+Database connection failure               try/catch returns 500, client always released in finally
